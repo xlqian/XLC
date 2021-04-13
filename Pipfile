@@ -1,0 +1,16 @@
+[[source]]
+url = "https://github.org/sxismifjslmdkfj"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "*"
+vtk = "*"
+PyQt5 = "*"
+numpy = "*"
+
+[dev-packages]
+pytest = "*"
+
+[requires]
+python_version = "3.8"

@@ -1,16 +1,15 @@
 [[source]]
-url = "https://github.org/sxismifjslmdkfj"
+url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
 [packages]
-requests = "*"
-vtk = "*"
-PyQt5 = "*"
-numpy = "*"
+vtk = "==9.0.1"
+PyQt5 = "==5.15.4"
+numpy = "==1.20.2"
 
 [dev-packages]
-pytest = "*"
+pytest = "==6.2.3"
 
 [requires]
 python_version = "3.8"

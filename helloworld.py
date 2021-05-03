@@ -1,4 +1,5 @@
 import sys
+import os
 import vtk
 from PyQt5 import QtCore
 from PyQt5 import Qt
@@ -25,9 +26,26 @@ class MainWindow(Qt.QMainWindow):
         self.current_openfile = None
 
     def _create_actions(self):
-        self.open_file_action = Qt.QAction("Open file...", self)
+        self.open_file_action = Qt.QAction(Qt.QIcon(os.path.join('images',
+                                                                 'blue-folder-open-document.png')),
+                                           "Open file...", self)
         self.open_file_action.setStatusTip("Open file")
         self.open_file_action.triggered.connect(self.file_open)
+
+        self.save_file_action = Qt.QAction(Qt.QIcon(os.path.join('images', 'disk.png')), "Save", self)
+        self.save_file_action.setStatusTip("Save current page")
+        self.save_file_action.triggered.connect(self.file_save)
+
+        self.save_as_file_action = Qt.QAction(Qt.QIcon(os.path.join('images',
+                                                                    'disk--pencil.png')),
+                                              "Save As...", self)
+        self.save_as_file_action.setStatusTip("Save current page to specified file")
+        self.save_as_file_action.triggered.connect(self.file_save_as)
+
+        self.undo_action = Qt.QAction(Qt.QIcon(os.path.join('images', 'arrow-curve-180-left.png')), "Undo", self)
+        self.undo_action.setStatusTip("Undo last change")
+        self.undo_action.triggered.connect(self.undo)
+
 
     def _create_menubar(self):
         menu_bar = self.menuBar()
@@ -35,13 +53,28 @@ class MainWindow(Qt.QMainWindow):
         file_menu = QMenu("&File", self)
         menu_bar.addMenu(file_menu)
         file_menu.addAction(self.open_file_action)
-
+        file_menu.addAction(self.save_file_action)
+        file_menu.addAction(self.save_as_file_action)
         self.setMenuBar(menu_bar)
 
+        edit_menu = self.menuBar().addMenu("&Edit")
+        edit_menu.addAction(self.undo_action)
+
     def _create_toolbar(self):
+        icon_size = Qt.QSize(40, 40)
         file_toolbar = Qt.QToolBar("File")
         self.addToolBar(QtCore.Qt.TopToolBarArea, file_toolbar)
         file_toolbar.addAction(self.open_file_action)
+        file_toolbar.addAction(self.save_file_action)
+        file_toolbar.addAction(self.save_as_file_action)
+        file_toolbar.setIconSize(icon_size)
+        file_toolbar.setFixedHeight(60)
+
+        edit_toolbar = Qt.QToolBar("Edit")
+        edit_toolbar.setIconSize(icon_size)
+        self.addToolBar(edit_toolbar)
+        edit_toolbar.addAction(self.undo_action)
+
 
     def _set_statusbar(self):
         status_bar = Qt.QStatusBar()
@@ -55,19 +88,27 @@ class MainWindow(Qt.QMainWindow):
         self.vtkWidget_source = QVTKRenderWindowInteractor(self.main_frame)
         self.vtkWidget_target = QVTKRenderWindowInteractor(self.main_frame)
 
-        self.convert_button = Qt.QPushButton("Convert to ??")
+        self.convert_layout = Qt.QVBoxLayout()
+
+        self.target_combo = Qt.QComboBox()
+        self.target_combo.setToolTip("To which format do you want to convert?")
+        self.target_combo.addItem("Apple")
+        self.target_combo.addItem("Pear")
+        self.target_combo.addItem("Lemon")
+        self.convert_layout.addWidget(self.target_combo)
+
+        self.convert_button = Qt.QPushButton("Convert")
         self.convert_button.clicked.connect(self.draw_target)
+        self.convert_layout.addWidget(self.convert_button)
 
         self.vtkWidget_source.GetRenderWindow().GetInteractor().Initialize()
         self.vtkWidget_target.GetRenderWindow().GetInteractor().Initialize()
 
-        self.layout.addStretch(1)
         self.layout.addWidget(self.vtkWidget_source)
-        self.layout.addStretch(1)
-        self.layout.addWidget(self.convert_button)
-        self.layout.addStretch(1)
+        self.layout.addSpacing(5)
+        self.layout.addLayout(self.convert_layout)
+        self.layout.addSpacing(5)
         self.layout.addWidget(self.vtkWidget_target)
-        self.layout.addStretch(1)
 
         self.setCentralWidget(self.main_frame)
 
@@ -78,6 +119,9 @@ class MainWindow(Qt.QMainWindow):
         self.draw(self.vtkWidget_source)
 
     def draw(self, vtkWidget):
+        if not self.current_openfile:
+            return
+
         reader = vtk.vtkUnstructuredGridReader()
         reader.SetFileName(self.current_openfile)
         reader.Update()
@@ -108,17 +152,44 @@ class MainWindow(Qt.QMainWindow):
 
     def file_open(self):
         try:
-            self.current_openfile, _ = Qt.QFileDialog.getOpenFileName(self, "Open file", "", "VTK (*.vtk);All files (*.*)")
+            self.current_openfile, _ = Qt.QFileDialog.getOpenFileName(self, "Open file", "",
+                                                                      "VTK (*.vtk);All files (*.*)")
             if not self.current_openfile:
                 return
             self.draw_source()
         except Exception as e:
             self.dialog_critical(str(e))
 
+    def file_save(self):
+        if self.current_openfile is None:
+            # If we do not have a path, we need to use Save As.
+            return self.file_save_as()
+        try:
+            raise Exception("Not Implemented yet")
+        except Exception as e:
+            self.dialog_critical(str(e))
+
+    def file_save_as(self):
+        path, _ = Qt.QFileDialog.getSaveFileName(self, "Save file", "", "vtk(*.vtk)")
+
+        if not path:
+            # If dialog is cancelled, will return ''
+            return
+        try:
+            raise Exception("Not Implemented yet")
+        except Exception as e:
+            self.dialog_critical(str(e))
+        else:
+            self.current_openfile = path
+
+    def undo(self):
+        try:
+            raise Exception("Not Implemented yet")
+        except Exception as e:
+            self.dialog_critical(str(e))
 
 if __name__ == "__main__":
     app = Qt.QApplication(sys.argv)
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
-

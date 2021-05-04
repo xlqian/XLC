@@ -46,7 +46,6 @@ class MainWindow(Qt.QMainWindow):
         self.undo_action.setStatusTip("Undo last change")
         self.undo_action.triggered.connect(self.undo)
 
-
     def _create_menubar(self):
         menu_bar = self.menuBar()
         # Creating menus using a QMenu object
@@ -74,7 +73,6 @@ class MainWindow(Qt.QMainWindow):
         edit_toolbar.setIconSize(icon_size)
         self.addToolBar(edit_toolbar)
         edit_toolbar.addAction(self.undo_action)
-
 
     def _set_statusbar(self):
         status_bar = Qt.QStatusBar()
@@ -187,6 +185,7 @@ class MainWindow(Qt.QMainWindow):
             raise Exception("Not Implemented yet")
         except Exception as e:
             self.dialog_critical(str(e))
+
 
 if __name__ == "__main__":
     app = Qt.QApplication(sys.argv)

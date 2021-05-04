@@ -27,24 +27,29 @@ class MainWindow(Qt.QMainWindow):
 
     def _create_actions(self):
         self.open_file_action = Qt.QAction(Qt.QIcon(os.path.join('images',
-                                                                 'blue-folder-open-document.png')),
+                                                                 'matt-icons_folder-blue.svg')),
                                            "Open file...", self)
         self.open_file_action.setStatusTip("Open file")
         self.open_file_action.triggered.connect(self.file_open)
 
-        self.save_file_action = Qt.QAction(Qt.QIcon(os.path.join('images', 'disk.png')), "Save", self)
+        self.save_file_action = Qt.QAction(Qt.QIcon(os.path.join('images',
+                                                                 'rodentia-icons_media-floppy.svg')), "Save", self)
         self.save_file_action.setStatusTip("Save current page")
         self.save_file_action.triggered.connect(self.file_save)
 
         self.save_as_file_action = Qt.QAction(Qt.QIcon(os.path.join('images',
-                                                                    'disk--pencil.png')),
+                                                                    'rodentia-icons_document-save-as.svg')),
                                               "Save As...", self)
         self.save_as_file_action.setStatusTip("Save current page to specified file")
         self.save_as_file_action.triggered.connect(self.file_save_as)
 
-        self.undo_action = Qt.QAction(Qt.QIcon(os.path.join('images', 'arrow-curve-180-left.png')), "Undo", self)
+        self.undo_action = Qt.QAction(Qt.QIcon(os.path.join('images', 'matt-icons_edit-undo-ltr.svg')), "Undo", self)
         self.undo_action.setStatusTip("Undo last change")
         self.undo_action.triggered.connect(self.undo)
+
+        self.redo_action = Qt.QAction(Qt.QIcon(os.path.join('images', 'matt-icons_edit-redo.svg')), "Redo", self)
+        self.redo_action.setStatusTip("Redo")
+        self.redo_action.triggered.connect(self.redo)
 
     def _create_menubar(self):
         menu_bar = self.menuBar()
@@ -58,6 +63,7 @@ class MainWindow(Qt.QMainWindow):
 
         edit_menu = self.menuBar().addMenu("&Edit")
         edit_menu.addAction(self.undo_action)
+        edit_menu.addAction(self.redo_action)
 
     def _create_toolbar(self):
         icon_size = Qt.QSize(40, 40)
@@ -73,6 +79,7 @@ class MainWindow(Qt.QMainWindow):
         edit_toolbar.setIconSize(icon_size)
         self.addToolBar(edit_toolbar)
         edit_toolbar.addAction(self.undo_action)
+        edit_toolbar.addAction(self.redo_action)
 
     def _set_statusbar(self):
         status_bar = Qt.QStatusBar()
@@ -181,6 +188,12 @@ class MainWindow(Qt.QMainWindow):
             self.current_openfile = path
 
     def undo(self):
+        try:
+            raise Exception("Not Implemented yet")
+        except Exception as e:
+            self.dialog_critical(str(e))
+
+    def redo(self):
         try:
             raise Exception("Not Implemented yet")
         except Exception as e:
